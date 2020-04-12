@@ -1,0 +1,152 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<meta charset="UTF-8">
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"> 
+	</script> 
+	
+</head> 
+<body> 
+
+	<canvas id="myChartRam" width="900" height="400"></canvas> 
+ 
+	<button onclick="getGraphOfRamUtilization()">click</button>
+<!-- 	<span id="printData"></span> -->
+	
+	<script type="text/javascript"> 
+		function getGraphOfRamUtilization(){
+			
+			//Ajax Request To Get THe Data From The Database
+			var request;
+			var val;
+			var val1;
+			var ramData = [];
+			var diskData = [];
+			var cpuData = [];
+			var readDTData = [];
+			
+				var url="GetDataServlet";
+				if(window.XMLHttpRequest){
+					request=new XMLHttpRequest();
+				}
+				else if(window.ActiveXObject){
+					request=new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				try{
+					request.onreadystatechange=getInfo;
+					request.open("GET",url,true);
+					request.send();
+				}
+				catch(e){
+					alert("Unable to connect to server");
+				}
+
+			function getInfo(){
+				if(request.readyState==4){
+					val=request.responseText;
+					val1=JSON.parse(val);
+					//document.getElementById('printData').innerHTML=val;
+					//console.log(val1.length);
+					//console.log(val1);
+
+					var i;
+					for (i = 0; i <val1.length; i++) {
+					  ramData.push(val1[i]["ramUsed"]);
+					  diskData.push(val1[i]["diskUsed"]);
+					  cpuData.push(val1[i]["cpuUsed"]);
+					  readDTData.push(val1[i]["readDateTime"]);
+					} 
+// 					console.log(ramData);
+// 					console.log(diskData);
+// 					console.log(cpuData);
+// 					console.log(readDTData);
+				}
+			}
+			//-----------------------------------------------
+			
+		var ctx = document.getElementById("myChartRam"); 
+			
+		Chart.defaults.global.defaultFontFamily='Lato';
+		Chart.defaults.global.defaultFontSize=18;
+		Chart.defaults.global.defaultFontColor='black';	
+			
+		var myChart = new Chart(ctx, { 
+			type: 'line', 
+			data: { 
+				labels: readDTData, 
+				datasets: [{ 
+					label: '# RAM Utilization', 
+					data: ramData, 
+					backgroundColor :"green", 
+					borderColor: "green", 
+					borderWidth : 4,
+					fill: false
+				},
+				{
+					label: '# DISK Utilization',
+					data: diskData,
+					backgroundColor: 'blue',
+					borderColor: 'blue',
+					borderWidth : 4,
+					fill: false
+				},
+				{
+					label: '# CPU Utilization',
+					data: cpuData,
+					backgroundColor: 'red',
+					borderColor: 'red',
+					borderWidth : 4,
+					fill: false
+				}] 
+			}, 
+			
+			plugins: [{
+				beforeLayout: function (chart) {
+					chart.width = chart.canvas.width * 0.9;
+					chart.options.layout.padding.left = 0;
+				},
+			}],
+			
+			options: { 
+				responsive: true,
+				title:{
+					display:true,
+					text:"RAM , DISK AND CPU UTILIZATION IN % ",
+					fontSize:25
+				},
+				tooltips:{
+					enabled:true,
+					backgroundColor:"black",
+					fontColor:"white"
+				},
+				scales: { 
+					xAxes: [{
+						display: true,
+						ticks: { 
+							beginAtZero:true 
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'DATE_AND_TIME'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						ticks: { 
+							beginAtZero:true 
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'READINGS'
+						}
+					}] 
+				} 
+			} 
+		}); 
+
+		}
+	</script>
+
+</body> 
+</html> 

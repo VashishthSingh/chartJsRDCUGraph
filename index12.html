@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Line Chart</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+</head>
+
+<body>
+
+	<canvas id="canvas" width="1013" height="506" class="chartjs-render-monitor"></canvas>
+	
+	<script>
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+				datasets: [{
+					label: 'My First dataset',
+					backgroundColor: 'green',
+					borderColor: 'green',
+					data: [
+						Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()
+					],
+					fill: false,
+				}, {
+					label: 'My Second dataset',
+					fill: false,
+					backgroundColor: 'blue',
+					borderColor: 'blue',
+					data: [
+						Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()
+					],
+				}]
+			},
+			plugins: [{
+				beforeLayout: function (chart) {
+					chart.width = chart.canvas.width * 0.6;
+					chart.options.layout.padding.left = 0;
+				},
+
+			}],
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart'
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+		
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+			//window.myLine2 = new Chart(ctx, config2);
+		};
+
+// 		document.getElementById('randomizeData').addEventListener('click', function() {
+// 			config.data.datasets.forEach(function(dataset) {
+// 				dataset.data = dataset.data.map(function() {
+// 					return Math.random();
+// 				});
+// 			});
+
+// 			config2.data.datasets.forEach(function(dataset) {
+// 				dataset.data = dataset.data.map(function() {
+// 					return Math.random();
+// 				});
+// 			});
+
+// 			window.myLine.update();
+// 			window.myLine2.update();
+// 		});
+
+	</script>
+</body></html>
